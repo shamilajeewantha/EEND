@@ -24,6 +24,58 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 import logging
+import torch.nn as nn
+
+from rwkvEncoder import RWKV_TimeMix, L2Wrap
+
+
+
+
+
+class RWKVEncoder(nn.Module):
+    def __init__(self, vocab_size, hidden_size, ctx_len=1024):
+        super().__init__()
+        self.hidden_size = hidden_size
+        self.ctx_len = ctx_len
+
+        # Optional embedding layer for input tokens
+        # self.embedding = nn.Embedding(vocab_size, hidden_size)
+
+        # A config object (like GPTConfig) with minimal fields
+        class Config:
+            def __init__(self, n_embd, n_layer, ctx_len, model_type, vocab_size):
+                self.n_embd = n_embd
+                self.n_layer = n_layer
+                self.ctx_len = ctx_len
+                self.model_type = model_type
+                self.vocab_size = vocab_size
+
+        config = Config(
+            n_embd=hidden_size,
+            n_layer=2,         # At least 2 layers to avoid ZeroDivisionError
+            ctx_len=ctx_len,
+            model_type='RWKV', # Optional descriptor
+            vocab_size=vocab_size
+        )
+
+        # Create your RWKV_TimeMix layer
+        self.rwkv_layer = RWKV_TimeMix(config, layer_id=0)
+
+    def forward(self, input_tokens, xx_init=None, aa_init=None, bb_init=None, pp_init=None):
+        """
+        input_tokens: LongTensor [batch_size, seq_len]
+        Returns: rwkv, e1, e2
+        """
+        # 1) Embed
+        # x = self.embedding(input_tokens)  # => [B, T, hidden_size]
+
+        # 2) Forward pass through RWKV_TimeMix
+        rwkv, e1, e2 = self.rwkv_layer(
+            input_tokens, xx_init=xx_init, aa_init=aa_init, bb_init=bb_init, pp_init=pp_init
+        )
+
+        return (e1+e2)/2
+
 
 
 """
@@ -45,13 +97,19 @@ class EncoderDecoderAttractor(Module):
     ) -> None:
         super(EncoderDecoderAttractor, self).__init__()
         self.device = device
-        self.encoder = torch.nn.LSTM(
-            input_size=n_units,
-            hidden_size=n_units,
-            num_layers=1,
-            dropout=encoder_dropout,
-            batch_first=True,
-            device=self.device)
+        # self.encoder = torch.nn.LSTM(
+        #     input_size=n_units,
+        #     hidden_size=n_units,
+        #     num_layers=1,
+        #     dropout=encoder_dropout,
+        #     batch_first=True,
+        #     device=self.device)
+
+        self.encoder = RWKVEncoder(
+            vocab_size=5000,  # or however many tokens
+            hidden_size=n_units,                # for example
+            ctx_len=256 ).to(device)    
+
         self.decoder = torch.nn.LSTM(
             input_size=n_units,
             hidden_size=n_units,
