@@ -74,7 +74,13 @@ class RWKVEncoder(nn.Module):
             input_tokens, xx_init=xx_init, aa_init=aa_init, bb_init=bb_init, pp_init=pp_init
         )
 
-        return (e1+e2)/2
+        # You can compute hx, cx from e1 and e2 as necessary. Here we use e1 and e2 directly.
+        hx = (e1 + e2) / 2  # You can modify this as needed
+        cx = (e1 + e2) / 2  # Likewise, modify it to represent the cell state
+
+        # Return in the format (None, (hx, cx)) to match unpacking
+        return None, (hx, cx)
+
 
 
 
