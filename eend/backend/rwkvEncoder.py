@@ -40,8 +40,17 @@ class L2Wrap(torch.autograd.Function):
 T_MAX = 1024 # increase this if your ctx_len is long [NOTE: TAKES LOTS OF VRAM!]
 # it's possible to go beyond CUDA limitations if you slice the ctx and pass the hidden state in each slice
 
+# Build the relative paths to the CUDA source files
+current_dir = os.path.dirname(os.path.abspath(__file__))
+cuda_sources = [
+    os.path.join(current_dir, "cuda/wkv_op.cpp"),
+    os.path.join(current_dir, "cuda/wkv_cuda.cu")
+]
+
+
+
 from torch.utils.cpp_extension import load
-wkv_cuda = load(name="wkv", sources=["cuda/wkv_op.cpp", "cuda/wkv_cuda.cu"],
+wkv_cuda = load(name="wkv", sources=cuda_sources,
                 verbose=True, extra_cuda_cflags=['-res-usage', '--maxrregcount 60', '--use_fast_math', '-O3', '-Xptxas -O3', f'-DTmax={T_MAX}'])
 
 class WKV(torch.autograd.Function):

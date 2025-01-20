@@ -31,5 +31,5 @@ train_batchsize: 32
 transformer_encoder_dropout: 0.1
 transformer_encoder_n_heads: 4
 transformer_encoder_n_layers: 4
-train_data_dir: <Kaldi data directory for train set>
-valid_data_dir: <Kaldi data directory for validation set>
+train_data_dir: content/data/simu/data/train_clean_5_ns2_beta2_500
+valid_data_dir: content/data/simu/data/dev_clean_2_ns2_beta2_500

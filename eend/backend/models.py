@@ -26,7 +26,7 @@ import torch.optim as optim
 import logging
 import torch.nn as nn
 
-from rwkvEncoder import RWKV_TimeMix, L2Wrap
+from backend.rwkvEncoder import RWKV_TimeMix, L2Wrap
 
 
 
