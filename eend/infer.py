@@ -129,17 +129,30 @@ def postprocess_output(
     threshold: float,
     median_window_length: int
 ) -> np.ndarray:
+    # Ensure input is numeric
+    probabilities = np.array(probabilities, dtype=np.float32)
     thresholded = probabilities > threshold
-    # Use this instead if it fails with newer medfilt version
-    # (see https://github.com/scipy/scipy/issues/16648)
-    # thresholded = 1.0 * (probabilities > threshold)
-    filtered = np.zeros(thresholded.shape)
+    
+    # Initialize output
+    filtered = np.zeros(thresholded.shape, dtype=np.float32)
+
     for spk in range(filtered.shape[1]):
-        filtered[:, spk] = medfilt(
-            thresholded[:, spk],
-            kernel_size=median_window_length)
+        data = thresholded[:, spk].astype(np.float32)  # Ensure it's float32
+        if data.ndim == 0 or len(data) == 0:
+            continue  # Skip empty speakers
+
+        # Ensure kernel size is an odd integer
+        if median_window_length % 2 == 0:
+            median_window_length += 1
+        
+        print(f"Processing speaker {spk}, data shape: {data.shape}, dtype: {data.dtype}, kernel size: {median_window_length}")
+        
+        filtered[:, spk] = medfilt(data, kernel_size=median_window_length)
+
+
     probs_extended = np.repeat(filtered, subsampling, axis=0)
     return probs_extended
+
 
 
 def parse_arguments() -> SimpleNamespace:
