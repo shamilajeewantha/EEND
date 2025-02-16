@@ -253,7 +253,8 @@ if __name__ == '__main__':
     elif args.estimate_spk_qty_thr != -1:
         out_dir = join(args.rttms_dir, f"spkqtythr{args.estimate_spk_qty_thr}_\
             thr{args.threshold}_median{args.median_window_length}")
-
+    args.running_mode = 'infer'
+    
     model = get_model(args)
 
     model = average_checkpoints(

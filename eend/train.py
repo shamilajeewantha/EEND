@@ -241,6 +241,8 @@ if __name__ == '__main__':
         gpuid = -1
         args.device = torch.device("cpu")
 
+    args.running_mode = 'train'
+
     if args.init_model_path == '':
         model = get_model(args)
         optimizer = setup_optimizer(args, model)

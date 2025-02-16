@@ -22,7 +22,7 @@ num_frames: 500
 num_speakers: 2
 num_workers: 4
 optimizer: noam
-output_path: output_directory
+output_path: /content/drive/MyDrive/speaker_diarization/EEND_output
 sampling_rate: 8000
 seed: 3
 subsampling: 10

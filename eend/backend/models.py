@@ -26,14 +26,14 @@ import torch.optim as optim
 import logging
 import torch.nn as nn
 
-from backend.rwkvEncoder import RWKV_TimeMix, L2Wrap
+from backend.rwkvEncoder import RWKV_TimeMix_Train, RWKV_TimeMix_Infer, L2Wrap
 
 
 
 
 
 class RWKVEncoder(nn.Module):
-    def __init__(self, vocab_size, hidden_size, ctx_len=1024):
+    def __init__(self, vocab_size, hidden_size, ctx_len=1024, running_mode='train'):
         super().__init__()
         self.hidden_size = hidden_size
         self.ctx_len = ctx_len
@@ -59,7 +59,15 @@ class RWKVEncoder(nn.Module):
         )
 
         # Create your RWKV_TimeMix layer
-        self.rwkv_layer = RWKV_TimeMix(config, layer_id=0)
+        if running_mode == 'train':
+            print("Running in train mode")
+            self.rwkv_layer = RWKV_TimeMix_Train(config, layer_id=0)
+        elif running_mode == 'infer':
+            pass
+            print("Running in infer mode")
+            # self.rwkv_layer = RWKV_TimeMix_Infer(config, layer_id=0)
+        else:
+            raise ValueError("Invalid running mode. Choose 'train' or 'infer'")
 
     def forward(self, input_tokens, xx_init=None, aa_init=None, bb_init=None, pp_init=None):
         """
@@ -100,6 +108,7 @@ class EncoderDecoderAttractor(Module):
         encoder_dropout: float,
         decoder_dropout: float,
         detach_attractor_loss: bool,
+        running_mode: str
     ) -> None:
         super(EncoderDecoderAttractor, self).__init__()
         self.device = device
@@ -114,7 +123,8 @@ class EncoderDecoderAttractor(Module):
         self.encoder = RWKVEncoder(
             vocab_size=5000,  # or however many tokens
             hidden_size=n_units,                # for example
-            ctx_len=256 ).to(device)    
+            ctx_len=256,
+            running_mode=running_mode).to(device)    
 
         self.decoder = torch.nn.LSTM(
             input_size=n_units,
@@ -338,6 +348,7 @@ class TransformerEDADiarization(Module):
         attractor_encoder_dropout: float,
         attractor_decoder_dropout: float,
         detach_attractor_loss: bool,
+        running_mode: str
     ) -> None:
         """ Self-attention-based diarization model.
         Args:
@@ -350,6 +361,7 @@ class TransformerEDADiarization(Module):
           attractor_loss_ratio (float)
           attractor_encoder_dropout (float)
           attractor_decoder_dropout (float)
+          running_mode (str): 'train' or 'infer'
         """
         self.device = device
         super(TransformerEDADiarization, self).__init__()
@@ -362,6 +374,7 @@ class TransformerEDADiarization(Module):
             attractor_encoder_dropout,
             attractor_decoder_dropout,
             detach_attractor_loss,
+            running_mode
         )
         self.attractor_loss_ratio = attractor_loss_ratio
         self.vad_loss_weight = vad_loss_weight
@@ -554,6 +567,7 @@ def get_model(args: SimpleNamespace) -> Module:
             attractor_decoder_dropout=args.attractor_decoder_dropout,
             detach_attractor_loss=args.detach_attractor_loss,
             vad_loss_weight=args.vad_loss_weight,
+            running_mode=args.running_mode
         )
     else:
         raise ValueError('Possible model_type is "TransformerEDA"')
