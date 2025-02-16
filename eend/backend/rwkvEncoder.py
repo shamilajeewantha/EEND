@@ -15,6 +15,7 @@ except:
 
 logger = logging.getLogger(__name__)
 
+RWKV_FLOAT_MODE = 'fp32'  # 'fp32', 'fp16', 'bf16'
 RWKV_HEAD_QK_DIM = 0
 print(f'\nRWKV_HEAD_QK_DIM {RWKV_HEAD_QK_DIM}\n')
 
@@ -591,11 +592,11 @@ class GPT(nn.Module):
             c = (q @ k.transpose(-2, -1)) * (1.0 / RWKV_HEAD_QK_DIM)
             c = c.masked_fill(self.copy_mask[:T, :T] == 0, 0)
 
-            if '32' in os.environ['RWKV_FLOAT_MODE']:
+            if RWKV_FLOAT_MODE == 'fp32':
                 c = c @ F.one_hot(idx, num_classes=self.config.vocab_size)
-            elif os.environ['RWKV_FLOAT_MODE'] == 'fp16':
+            elif RWKV_FLOAT_MODE == 'fp16':
                 c = c @ F.one_hot(idx, num_classes=self.config.vocab_size).half()
-            elif os.environ['RWKV_FLOAT_MODE'] == 'bf16':
+            elif RWKV_FLOAT_MODE == 'bf16':
                 c = c @ F.one_hot(idx, num_classes=self.config.vocab_size).bfloat16()
 
             x = self.head(x) + c
