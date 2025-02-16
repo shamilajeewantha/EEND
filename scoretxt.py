@@ -12,8 +12,13 @@ def load_rttm(filepath):
     return annotation
 
 # Paths
-hypothesis_rttm_dir = "/content/EEND/output_directory/hypothesis_rttms/epochs20-24/timeshuffleTrue/spk_qty2_spk_qty_thr-1.0/detection_thr0.5/median11/rttms"
-reference_rttm_path = "/content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/simu/data/dev_clean_2_ns2_beta2_500/rttm"
+# hypothesis_rttm_dir = "/content/EEND/output_directory/hypothesis_rttms/epochs20-24/timeshuffleTrue/spk_qty2_spk_qty_thr-1.0/detection_thr0.5/median11/rttms"
+# reference_rttm_path = "/content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/simu/data/dev_clean_2_ns2_beta2_500/rttm"
+
+hypothesis_rttm_dir = "./rttm/rttms"
+reference_rttm_path = "./rttm/rttm"
+
+
 output_file_path = "der_results.txt"
 
 # Initialize DER metric
@@ -37,7 +42,9 @@ with open(output_file_path, "w") as output_file:
             hypothesis_annotation = load_rttm(hypothesis_rttm_path)
             
             # Compute DER
+            print(f"Processing {filename}...")
             der = metric(reference_annotation, hypothesis_annotation)
+            print(f"finished with DER = {100 * der:.2f}%")
             result_line = f"{filename}: {100 * der:.2f}%\n"
             
             # Write and print results
