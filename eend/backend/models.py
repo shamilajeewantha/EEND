@@ -62,10 +62,9 @@ class RWKVEncoder(nn.Module):
         if running_mode == 'train':
             print("Running in train mode")
             self.rwkv_layer = RWKV_TimeMix_Train(config, layer_id=0)
-        elif running_mode == 'infer':
-            pass
+        elif running_mode == 'infer':            
             print("Running in infer mode")
-            # self.rwkv_layer = RWKV_TimeMix_Infer(config, layer_id=0)
+            self.rwkv_layer = RWKV_TimeMix_Infer(config, layer_id=0)
         else:
             raise ValueError("Invalid running mode. Choose 'train' or 'infer'")
 
