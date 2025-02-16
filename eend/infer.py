@@ -263,12 +263,12 @@ if __name__ == '__main__':
 
     out_dir = join(
         args.rttms_dir,
-        f"epochs{args.epochs}",
-        f"timeshuffle{args.time_shuffle}",
-        (f"spk_qty{args.estimate_spk_qty}_"
-            f"spk_qty_thr{args.estimate_spk_qty_thr}"),
-        f"detection_thr{args.threshold}",
-        f"median{args.median_window_length}",
+        # f"epochs{args.epochs}",
+        # f"timeshuffle{args.time_shuffle}",
+        # (f"spk_qty{args.estimate_spk_qty}_"
+        #     f"spk_qty_thr{args.estimate_spk_qty_thr}"),
+        # f"detection_thr{args.threshold}",
+        # f"median{args.median_window_length}",
         "rttms"
     )
     Path(out_dir).mkdir(parents=True, exist_ok=True)

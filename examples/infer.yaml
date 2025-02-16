@@ -1,7 +1,7 @@
 # training options
 context_size: 7
 encoder_units: 2048
-epochs: 20-24
+epochs: 0-1
 estimate_spk_qty: 2
 estimate_spk_qty_thr: -1
 feature_dim: 23
@@ -13,9 +13,9 @@ infer_data_dir: /content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/si
 input_transform: logmel_meannorm
 median_window_length: 11
 model_type: TransformerEDA
-models_path: output_directory/models
+models_path: /content/drive/MyDrive/speaker_diarization/EEND_output/models
 num_frames: -1
-rttms_dir: output_directory/hypothesis_rttms
+rttms_dir: /content/drive/MyDrive/speaker_diarization/EEND_output/hypothesis_rttms
 sampling_rate: 8000
 seed: 3
 subsampling: 10
