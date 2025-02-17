@@ -36,7 +36,7 @@ def split_rttm(reference_rttm_path, output_dir):
         print(f"Created: {output_path} ({len(lines)} entries)")
 
 # Example Usage
-reference_rttm_path = "./rttm/rttm"  # Path to your large RTTM file
-output_dir = "./rttm/split_rttms"  # Folder to store the split RTTM files
+reference_rttm_path = "/content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/simu/data/dev_clean_2_ns2_beta2_500/rttm"  # Path to your large RTTM file
+output_dir = "/content/drive/MyDrive/speaker_diarization/EEND_output/split_rttms"  # Folder to store the split RTTM files
 
 split_rttm(reference_rttm_path, output_dir)

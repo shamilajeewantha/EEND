@@ -79,10 +79,10 @@ def calculate_der(reference_folder, hypothesis_folder):
 
 # Folder names containing RTTM files (in the same directory as this script)
 # pyannote as refernce
-reference_folder = './rttm/manual_rttms'
+reference_folder = '/content/drive/MyDrive/speaker_diarization/EEND_output/split_rttms'
 # hypothesis_folder = 'diaper_annotations'
 # hypothesis_folder = 'powerset_annotations'
-hypothesis_folder = './rttm/pyannote2_annotations'
+hypothesis_folder = '/content/drive/MyDrive/speaker_diarization/EEND_output/hypothesis_rttms/rttms'
 
 
 
