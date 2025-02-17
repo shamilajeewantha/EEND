@@ -1,7 +1,7 @@
 # training options
 context_size: 7
 encoder_units: 2048
-epochs: 0-1
+epochs: 90-100
 estimate_spk_qty: 2
 estimate_spk_qty_thr: -1
 feature_dim: 23
