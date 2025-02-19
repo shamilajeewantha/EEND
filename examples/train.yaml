@@ -19,7 +19,7 @@ max_epochs: 100
 model_type: TransformerEDA
 noam_warmup_steps: 200000
 num_frames: 500
-num_speakers: 2
+num_speakers: 4
 num_workers: 4
 optimizer: noam
 output_path: /content/drive/MyDrive/speaker_diarization/EEND_output
@@ -31,5 +31,5 @@ train_batchsize: 32
 transformer_encoder_dropout: 0.1
 transformer_encoder_n_heads: 4
 transformer_encoder_n_layers: 4
-train_data_dir: /content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/simu/data/train_clean_5_ns2_beta2_500
-valid_data_dir: /content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/simu/data/dev_clean_2_ns2_beta2_500
+train_data_dir: /content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/simu/data/train_clean_5_ns4_beta2_800
+valid_data_dir: /content/Speaker-ID-Cluster/EEND/egs/mini_librispeech/v1/data/simu/data/dev_clean_2_ns4_beta2_200

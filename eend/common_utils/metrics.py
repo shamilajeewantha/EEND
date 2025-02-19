@@ -20,6 +20,8 @@ def calculate_metrics(
     res["avg_pred_spk_qty"] = 0
     res["DER_FA"] = 0
     res["DER_miss"] = 0
+    res["DER_conf"] = 0
+    res["DER"] = 0    
     res["VAD_FA"] = 0
     res["VAD_miss"] = 0
     res["OSD_FA"] = 0
@@ -54,11 +56,17 @@ def calculate_metrics(
         overlap_frames = torch.where(ref_spk_qty > 1)[0]
         overlap_frames_tot += overlap_frames.shape[0]
 
-        diff_qty = pred_spk_qty - ref_spk_qty
-        res["DER_FA"] += diff_qty[torch.where(diff_qty > 0)].sum()
-        res["DER_miss"] += -diff_qty[torch.where(diff_qty < 0)].sum()
-        # conf. error not calculated as computing all permutations is expensive
-        # TODO use Hungarian algorithm?
+        diff = d_seq - t_seq
+        # negative values will be misses and positives will be false alarms
+        diff_sum = diff.sum(axis=1)
+        miss_counts = -diff_sum[torch.where(diff_sum < 0)].sum()
+        fa_counts = diff_sum[torch.where(diff_sum > 0)].sum()
+        conf_counts = ((torch.abs(diff).sum(axis=1) -
+                        torch.abs(diff.sum(axis=1)))/2).sum()
+        res["DER_miss"] += miss_counts
+        res["DER_FA"] += fa_counts
+        res["DER_conf"] += conf_counts
+        res["DER"] += miss_counts + fa_counts + conf_counts
 
         res["VAD_FA"] += torch.where(ref_spk_qty[torch.where(pred_spk_qty > 0)[0]] < 1)[0].shape[0]
         res["VAD_miss"] += torch.where(pred_spk_qty[torch.where(ref_spk_qty > 0)[0]] < 1)[0].shape[0]
@@ -69,6 +77,10 @@ def calculate_metrics(
     # divide by the numerators estimated in the whole batch
     res["DER_FA"] = torch.round(100 * res["DER_FA"] / (epsilon + speech_frames_tot) * 10**round_digits / (10**round_digits))
     res["DER_miss"] = torch.round(100 * res["DER_miss"] / (epsilon + speech_frames_tot) * 10**round_digits / (10**round_digits))
+    res["DER_conf"] = torch.round(100 * res["DER_conf"] / (
+        epsilon + speech_frames_tot) * 10**round_digits) / (10**round_digits)
+    res["DER"] = torch.round(100 * res["DER"] / (
+        epsilon + speech_frames_tot) * 10**round_digits / (10**round_digits))    
     res["VAD_FA"] = round(100 * res["VAD_FA"] / (epsilon + active_frames_tot), 2)
     res["VAD_miss"] = round(100 * res["VAD_miss"] / (epsilon + active_frames_tot), 2)
     res["OSD_FA"] = round(100 * res["OSD_FA"] / (epsilon + overlap_frames_tot), 2)
@@ -89,6 +101,8 @@ def new_metrics() -> Dict[str, float]:
         'avg_pred_spk_qty',
         'DER_FA',
         'DER_miss',
+        'DER_conf',
+        'DER',
         'VAD_FA',
         'VAD_miss',
         'OSD_FA',

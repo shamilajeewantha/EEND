@@ -87,7 +87,6 @@ reference_folder = './rttm/manual_rttms'
 hypothesis_folder = './rttm/hypothesis_rttms/ep100'
 
 
-
 # Calculate average DER
 average_der, average_confusion, average_false_alarm, average_missed_detection = calculate_der(reference_folder, hypothesis_folder)
 print(f'hypothesis_folder: {hypothesis_folder}')
