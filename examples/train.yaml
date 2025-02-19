@@ -14,7 +14,7 @@ gpu: 1
 gradclip: 5
 hidden_size: 256
 input_transform: logmel_meannorm
-log_report_batches_num: 1000
+log_report_batches_num: 2
 max_epochs: 100
 model_type: TransformerEDA
 noam_warmup_steps: 200000
