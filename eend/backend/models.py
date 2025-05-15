@@ -26,7 +26,8 @@ import torch.optim as optim
 import logging
 import torch.nn as nn
 
-from backend.rwkvEncoder import RWKV_TimeMix_Train, RWKV_TimeMix_Infer, L2Wrap
+# from backend.rwkvEncoder import RWKV_TimeMix_Train, RWKV_TimeMix_Infer, L2Wrap
+from backend.rwkv6_encoder import RWKV_Tmix_x060_state
 
 
 
@@ -61,10 +62,10 @@ class RWKVEncoder(nn.Module):
         # Create your RWKV_TimeMix layer
         if running_mode == 'train':
             print("Running in train mode")
-            self.rwkv_layer = RWKV_TimeMix_Train(config, layer_id=0)
-        elif running_mode == 'infer':            
-            print("Running in infer mode")
-            self.rwkv_layer = RWKV_TimeMix_Infer(config, layer_id=0)
+            self.rwkv_layer = RWKV_Tmix_x060_state(config, layer_id=0)
+        # elif running_mode == 'infer':            
+        #     print("Running in infer mode")
+        #     self.rwkv_layer = RWKV_TimeMix_Infer(config, layer_id=0)
         else:
             raise ValueError("Invalid running mode. Choose 'train' or 'infer'")
 
